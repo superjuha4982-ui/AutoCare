@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+
+<html lang="de">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Termin buchen - AutoCare</title>
+
+<style>
+
+    html {
+        scroll-behavior: smooth;
+    }
+
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: #111;
+        color: white;
+    }
+
+    /* NAVIGATION */
+
+    nav {
+        display: flex;
+        justify-content: center;
+        gap: 40px;
+        padding: 20px;
+        background: rgba(24, 24, 24, 0.9);
+        backdrop-filter: blur(10px);
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+    }
+
+    nav a {
+        color: white;
+        text-decoration: none;
+        font-size: 18px;
+        transition: 0.3s;
+    }
+
+    nav a:hover {
+        color: #aaa;
+    }
+
+    /* BOOKING */
+
+    .booking {
+        min-height: 80vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 80px 20px;
+        background:
+            radial-gradient(
+                circle at 50% 20%,
+                rgba(255,255,255,0.05),
+                transparent 40%
+            ),
+            #111;
+    }
+
+    .booking-box {
+        width: 100%;
+        max-width: 650px;
+        background: rgba(28,28,28,0.95);
+        padding: 50px 35px;
+        border-radius: 24px;
+        border: 1px solid #333;
+        box-shadow: 0 25px 60px rgba(0,0,0,0.5);
+    }
+
+    .booking-box h1 {
+        text-align: center;
+        font-size: 48px;
+        margin: 0 0 10px;
+    }
+
+    .booking-subtitle {
+        text-align: center;
+        color: #999;
+        font-size: 17px;
+        margin-bottom: 40px;
+    }
+
+    /* FORM */
+
+    .form-group {
+        margin-bottom: 22px;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-size: 16px;
+        color: #ddd;
+    }
+
+    .form-group input,
+    .form-group select {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 15px;
+        background: #252525;
+        border: 1px solid #3a3a3a;
+        border-radius: 10px;
+        color: white;
+        font-size: 16px;
+        outline: none;
+        transition: 0.3s;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus {
+        border-color: #aaa;
+        background: #2b2b2b;
+    }
+
+    .form-row {
+        display: flex;
+        gap: 15px;
+    }
+
+    .form-row .form-group {
+        flex: 1;
+    }
+
+    /* DATE FIX */
+
+    input[type="date"] {
+        direction: ltr;
+        text-align: left;
+        unicode-bidi: plaintext;
+    }
+
+    /* PRICE */
+
+    .price-box {
+        margin: 30px 0;
+        padding: 25px;
+        background: linear-gradient(
+            135deg,
+            #202020,
+            #151515
+        );
+        border: 1px solid #444;
+        border-radius: 15px;
+        text-align: center;
+    }
+
+    .price-box span {
+        display: block;
+        color: #999;
+        font-size: 15px;
+        margin-bottom: 8px;
+    }
+
+    .price {
+        font-size: 38px;
+        font-weight: bold;
+    }
+
+    /* BUTTON */
+
+    .submit-button {
+        width: 100%;
+        padding: 17px;
+        border: none;
+        border-radius: 12px;
+        background: white;
+        color: black;
+        font-size: 18px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+    .submit-button:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 35px rgba(255,255,255,0.2);
+    }
+
+    /* SUCCESS */
+
+    .success {
+        display: none;
+        text-align: center;
+        padding: 20px 10px;
+    }
+
+    .success-icon {
+        font-size: 60px;
+        margin-bottom: 15px;
+    }
+
+    .success h2 {
+        font-size: 32px;
+        margin-bottom: 10px;
+    }
+
+    .success-text {
+        color: #aaa;
+        line-height: 1.6;
+        margin-bottom: 25px;
+    }
+
+    /* APPOINTMENT SUMMARY */
+
+    .appointment-summary {
+        background: #202020;
+        border: 1px solid #3a3a3a;
+        border-radius: 15px;
+        padding: 20px;
+        text-align: left;
+        margin: 25px 0;
+    }
+
+    .summary-row {
+        display: flex;
+        justify-content: space-between;
+        gap: 20px;
+        padding: 12px 0;
+        border-bottom: 1px solid #333;
+    }
+
+    .summary-row:last-child {
+        border-bottom: none;
+    }
+
+    .summary-label {
+        color: #888;
+    }
+
+    .summary-value {
+        color: white;
+        font-weight: bold;
+        text-align: right;
+    }
+
+    .summary-price {
+        font-size: 22px;
+    }
+
+    /* BACK BUTTON */
+
+    .back-button {
+        display: inline-block;
+        margin-top: 15px;
+        padding: 13px 25px;
+        background: white;
+        color: black;
+        text-decoration: none;
+        border-radius: 10px;
+        transition: 0.3s;
+    }
+
+    .back-button:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 10px 30px rgba(255,255,255,0.2);
+    }
+
+    /* FOOTER */
+
+    footer {
+        text-align: center;
+        padding: 40px 20px;
+        background: #0b0b0b;
+        border-top: 1px solid #333;
+    }
+
+    footer p {
+        color: #666;
+        font-size: 14px;
+    }
+
+    /* MOBILE */
+
+    @media (max-width: 600px) {
+
+        nav {
+            gap: 15px;
+            padding: 15px 10px;
+        }
+
+        nav a {
+            font-size: 14px;
+        }
+
+        .booking {
+            padding: 50px 15px;
+        }
+
+        .booking-box {
+            padding: 35px 20px;
+        }
+
+        .booking-box h1 {
+            font-size: 38px;
+        }
+
+        .form-row {
+            flex-direction: column;
+            gap: 0;
+        }
+
+        .summary-row {
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .summary-value {
+            text-align: left;
+        }
+
+    }
+
+</style>
+
+</head>
+
+<body>
+
+<nav>
+
+    <a href="index.html">Startseite</a>
+
+    <a href="index.html#leistungen">Leistungen</a>
+
+    <a href="kontakt.html">Termin buchen</a>
+
+</nav>
+
+
+<section class="booking">
+
+    <div class="booking-box">
+
+        <!-- FORMULAR -->
+
+        <div id="bookingForm">
+
+            <h1>Termin buchen</h1>
+
+            <p class="booking-subtitle">
+                Wähle deine gewünschte Fahrzeugpflege und deinen Wunschtermin.
+            </p>
+
+
+            <div class="form-group">
+
+                <label for="service">
+                    🚗 Leistung
+                </label>
+
+                <select id="service">
+
+                    <option value="30" data-name="Innenreinigung">
+                        Innenreinigung — ab 30 €
+                    </option>
+
+                    <option value="20" data-name="Außenwäsche">
+                        Außenwäsche — ab 20 €
+                    </option>
+
+                    <option value="45" data-name="Komplettpaket">
+                        Komplettpaket — ab 45 €
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="form-row">
+
+                <div class="form-group">
+
+                    <label for="date">
+                        📅 Datum
+                    </label>
+
+                    <input
+                        type="date"
+                        id="date"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="time">
+                        🕐 Uhrzeit
+                    </label>
+
+                    <select id="time">
+
+                        <option value="09:00">09:00</option>
+                        <option value="10:00">10:00</option>
+                        <option value="11:00">11:00</option>
+                        <option value="12:00">12:00</option>
+                        <option value="13:00">13:00</option>
+                        <option value="14:00">14:00</option>
+                        <option value="15:00">15:00</option>
+                        <option value="16:00">16:00</option>
+                        <option value="17:00">17:00</option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="name">
+                    👤 Name
+                </label>
+
+                <input
+                    type="text"
+                    id="name"
+                    placeholder="Dein Name"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="phone">
+                    📞 Telefonnummer
+                </label>
+
+                <input
+                    type="tel"
+                    id="phone"
+                    placeholder="z. B. 07143 123456"
+                    required
+                >
+
+            </div>
+
+
+            <div class="price-box">
+
+                <span>Voraussichtlicher Preis</span>
+
+                <div class="price" id="price">
+                    30 €
+                </div>
+
+            </div>
+
+
+            <button
+                class="submit-button"
+                onclick="bookAppointment()"
+            >
+                Termin anfragen →
+            </button>
+
+        </div>
+
+
+        <!-- BESTÄTIGUNG -->
+
+        <div class="success" id="success">
+
+            <div class="success-icon">
+                ✅
+            </div>
+
+            <h2>Anfrage erhalten!</h2>
+
+            <p class="success-text">
+                Vielen Dank, <strong id="successName"></strong>!<br>
+                Deine Terminanfrage wurde vorbereitet.
+            </p>
+
+
+            <div class="appointment-summary">
+
+                <div class="summary-row">
+
+                    <span class="summary-label">
+                        🚗 Leistung
+                    </span>
+
+                    <span
+                        class="summary-value"
+                        id="successService"
+                    >
+                    </span>
+
+                </div>
+
+
+                <div class="summary-row">
+
+                    <span class="summary-label">
+                        📅 Datum
+                    </span>
+
+                    <span
+                        class="summary-value"
+                        id="successDate"
+                    >
+                    </span>
+
+                </div>
+
+
+                <div class="summary-row">
+
+                    <span class="summary-label">
+                        🕐 Uhrzeit
+                    </span>
+
+                    <span
+                        class="summary-value"
+                        id="successTime"
+                    >
+                    </span>
+
+                </div>
+
+
+                <div class="summary-row">
+
+                    <span class="summary-label">
+                        📞 Telefon
+                    </span>
+
+                    <span
+                        class="summary-value"
+                        id="successPhone"
+                    >
+                    </span>
+
+                </div>
+
+
+                <div class="summary-row">
+
+                    <span class="summary-label">
+                        💶 Preis
+                    </span>
+
+                    <span
+                        class="summary-value summary-price"
+                        id="successPrice"
+                    >
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <p class="success-text">
+                Wir melden uns schnellstmöglich,
+                um den Termin zu bestätigen.
+            </p>
+
+
+            <a href="index.html" class="back-button">
+                ← Zur Startseite
+            </a>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<footer>
+
+    <p>
+        © 2026 AutoCare. Alle Rechte vorbehalten.
+    </p>
+
+</footer>
+
+
+<script>
+
+    /* ELEMENTE */
+
+    const service = document.getElementById("service");
+
+    const price = document.getElementById("price");
+
+    const dateInput = document.getElementById("date");
+
+
+    /* PREIS AKTUALISIEREN */
+
+    service.addEventListener("change", function() {
+
+        price.textContent = this.value + " €";
+
+    });
+
+
+    /* HEUTIGES DATUM ALS MINDESTDATUM */
+
+    const today = new Date();
+
+    const year = today.getFullYear();
+
+    const month = String(today.getMonth() + 1).padStart(2, "0");
+
+    const day = String(today.getDate()).padStart(2, "0");
+
+    dateInput.min = `${year}-${month}-${day}`;
+
+
+    /* DATUM SCHÖN FORMATIEREN */
+
+    function formatDate(date) {
+
+        const parts = date.split("-");
+
+        return `${parts[2]}.${parts[1]}.${parts[0]}`;
+
+    }
+
+
+    /* TERMIN ABSENDEN */
+
+    function bookAppointment() {
+
+        const name =
+            document.getElementById("name").value.trim();
+
+        const phone =
+            document.getElementById("phone").value.trim();
+
+        const date =
+            document.getElementById("date").value;
+
+        const time =
+            document.getElementById("time").value;
+
+
+        if (
+            name === "" ||
+            phone === "" ||
+            date === ""
+        ) {
+
+            alert("Bitte fülle alle Felder aus.");
+
+            return;
+
+        }
+
+
+        /* AUSGEWÄHLTE LEISTUNG */
+
+        const selectedOption =
+            service.options[service.selectedIndex];
+
+        const serviceName =
+            selectedOption.dataset.name;
+
+        const servicePrice =
+            service.value;
+
+
+        /* DATEN IN BESTÄTIGUNG EINSETZEN */
+
+        document.getElementById("successName").textContent =
+            name;
+
+        document.getElementById("successService").textContent =
+            serviceName;
+
+        document.getElementById("successDate").textContent =
+            formatDate(date);
+
+        document.getElementById("successTime").textContent =
+            time;
+
+        document.getElementById("successPhone").textContent =
+            phone;
+
+        document.getElementById("successPrice").textContent =
+            servicePrice + " €";
+
+
+        /* FORMULAR AUSBLENDEN */
+
+        document.getElementById("bookingForm").style.display =
+            "none";
+
+
+        /* BESTÄTIGUNG ANZEIGEN */
+
+        document.getElementById("success").style.display =
+            "block";
+
+    }
+
+</script>
+
+</body>
+
+</html>
